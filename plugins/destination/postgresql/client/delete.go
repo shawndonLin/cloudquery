@@ -13,6 +13,7 @@ import (
 // DeleteStaleBatch deletes stale records from the destination table. It forms part of the writer.MixedBatchWriter interface.
 func (c *Client) DeleteStaleBatch(ctx context.Context, messages message.WriteDeleteStales) error {
 	batch := &pgx.Batch{}
+
 	for _, msg := range messages {
 		var sb strings.Builder
 		sb.WriteString("delete from ")
@@ -22,7 +23,13 @@ func (c *Client) DeleteStaleBatch(ctx context.Context, messages message.WriteDel
 		sb.WriteString(" = $1 and ")
 		sb.WriteString(schema.CqSyncTimeColumn.Name)
 		sb.WriteString(" < $2")
-		batch.Queue(sb.String(), msg.SourceName, msg.SyncTime)
+		nameSlices := strings.Split(msg.SourceName, ";")
+		if len(nameSlices) == 3 {
+			sb.WriteString(" and $3 = $4")
+			batch.Queue(sb.String(), nameSlices[0], msg.SyncTime, nameSlices[1], nameSlices[2])
+		} else {
+			batch.Queue(sb.String(), nameSlices[0], msg.SyncTime)
+		}
 	}
 	br := c.conn.SendBatch(ctx, batch)
 	if err := br.Close(); err != nil {

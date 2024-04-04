@@ -178,6 +178,7 @@ func syncConnectionV3(ctx context.Context, source v3source, destinations []v3des
 			Connection: sourceSpec.BackendOptions.Connection,
 		}
 	}
+
 	syncClient, err := sourcePbClient.Sync(ctx, syncReq)
 	if err != nil {
 		return err
@@ -349,7 +350,12 @@ func syncConnectionV3(ctx context.Context, source v3source, destinations []v3des
 
 	for i := range destinationsClients {
 		if destinationSpecs[i].WriteMode == specs.WriteModeOverwriteDeleteStale {
-			if err := deleteStale(writeClients[i], tablesForDeleteStale, sourceName, syncTime); err != nil {
+			sourceNameWithFilter := sourceName
+			if sourceName == "aws" && sourceSpec.Spec["account_id"] != nil && destinationSpecs[i].Metadata.Name == "postgresql" {
+				sourceNameWithFilter = sourceName + ";account_id;" + sourceSpec.Spec["account_id"].(string)
+			}
+
+			if err := deleteStale(writeClients[i], tablesForDeleteStale, sourceNameWithFilter, syncTime); err != nil {
 				return err
 			}
 		}
