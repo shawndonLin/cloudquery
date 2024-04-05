@@ -45,6 +45,7 @@ func Buckets() *schema.Table {
 			bucketPublicAccessBlock(),
 			bucketVersionings(),
 			bucketPolicies(),
+			bucketObjects(),
 		},
 	}
 }
