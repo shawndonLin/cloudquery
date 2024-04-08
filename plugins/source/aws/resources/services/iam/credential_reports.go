@@ -35,6 +35,7 @@ func CredentialReports() *schema.Table {
 		),
 		Multiplex: client.ServiceAccountRegionMultiplexer(tableName, "iam"),
 		Columns: []schema.Column{
+			client.DefaultAccountIDColumn(true),
 			{
 				Name:                "arn",
 				Type:                arrow.BinaryTypes.String,

@@ -22,7 +22,8 @@ The 'request_account_id' and 'request_region' columns are added to show from whe
 		Multiplex: client.ServiceAccountRegionMultiplexer(tableName, "ec2"),
 		Transform: transformers.TransformWithStruct(&types.Subnet{}),
 		Columns: []schema.Column{
-			client.RequestAccountIDColumn(true),
+			client.DefaultAccountIDColumn(true),
+			// client.RequestAccountIDColumn(true),
 			client.RequestRegionColumn(true),
 			{
 				Name:                "arn",

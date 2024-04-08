@@ -19,6 +19,7 @@ func imageAttributesLaunchPermissions() *schema.Table {
 		Resolver:    fetchEc2ImageAttributeLaunchPermissions,
 		Transform:   transformers.TransformWithStruct(&types.LaunchPermission{}),
 		Columns: []schema.Column{
+			client.DefaultAccountIDColumn(true),
 			{
 				Name:                "image_arn",
 				Type:                arrow.BinaryTypes.String,

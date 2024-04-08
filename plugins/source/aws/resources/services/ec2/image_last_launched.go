@@ -18,6 +18,7 @@ func imageAttributesLastLaunchTime() *schema.Table {
 The date and time, in ISO 8601 date-time format, when the AMI was last used to launch an EC2 instance. When the AMI is used to launch an instance, there is a 24-hour delay before that usage is reported.`,
 		Resolver: fetchEc2ImageAttributeLastLaunchTime,
 		Columns: []schema.Column{
+			client.DefaultAccountIDColumn(true),
 			{
 				Name:                "image_arn",
 				Type:                arrow.BinaryTypes.String,
