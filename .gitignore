@@ -19,6 +19,7 @@ dest/*
 outfile
 cli/examples
 cli/cq_csv_output
+cli/local_spec.yaml
 test_init_config.yml
 telemetry-random-id
 go.work
