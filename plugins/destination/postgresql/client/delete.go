@@ -25,11 +25,15 @@ func (c *Client) DeleteStaleBatch(ctx context.Context, messages message.WriteDel
 		sb.WriteString(" < $2")
 		nameSlices := strings.Split(msg.SourceName, ";")
 		if len(nameSlices) == 3 {
-			sb.WriteString(" and $3 = $4")
-			batch.Queue(sb.String(), nameSlices[0], msg.SyncTime, nameSlices[1], nameSlices[2])
+			sb.WriteString(" and " + nameSlices[1])
+			sb.WriteString(" = $3")
+			batch.Queue(sb.String(), nameSlices[0], msg.SyncTime, nameSlices[2])
+			// fmt.Printf("%s :%s %s %s\n", sb.String(), nameSlices[0], msg.SyncTime, nameSlices[2])
 		} else {
 			batch.Queue(sb.String(), nameSlices[0], msg.SyncTime)
+			// fmt.Printf("%s :%s %s \n", sb.String(), nameSlices[0], msg.SyncTime)
 		}
+
 	}
 	br := c.conn.SendBatch(ctx, batch)
 	if err := br.Close(); err != nil {
