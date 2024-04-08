@@ -351,7 +351,8 @@ func syncConnectionV3(ctx context.Context, source v3source, destinations []v3des
 	for i := range destinationsClients {
 		if destinationSpecs[i].WriteMode == specs.WriteModeOverwriteDeleteStale {
 			sourceNameWithFilter := sourceName
-			if sourceName == "aws" && sourceSpec.Spec["account_id"] != nil && destinationSpecs[i].Metadata.Name == "postgresql" {
+			if sourceName == "aws" && sourceSpec.Spec["account_id"] != nil &&
+				(destinationSpecs[i].Metadata.Name == "postgresql" || destinationSpecs[i].Metadata.Name == "neo4j") {
 				sourceNameWithFilter = sourceName + ";account_id;" + sourceSpec.Spec["account_id"].(string)
 			}
 
